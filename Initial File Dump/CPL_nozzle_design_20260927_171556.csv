@@ -1,0 +1,117 @@
+CPL DESIGN RESULTS
+Generated,2026-09-27T17:15:56.427347
+
+INPUTS
+Parameter,Value
+Thrust_lbf,450
+Isp_s,150
+OF,3
+p_tank_low_psi,450
+dp_N2O_psi,15
+dp_IPA_psi,45
+Pc_psi,350
+L_star_m,0.635
+alpha_deg,15
+Pe_Pa,101325
+stiffness,0.2
+Cd_ox,0.4
+Cd_fuel,0.4
+rho_IPA_kg_m3,785
+film_cooling_percentage,0.2
+smallest_drill,61
+
+MASS FLOW RATES
+Parameter,Value
+mdot_tot,1.3603124220183487
+mdot_fuel_comb,0.32007351106314086
+mdot_fuel_film,0.08001837776578521
+mdot_ox,0.9602205331894226
+
+CHAMBER DEFINITION
+Parameter,Value
+L_star,0.635
+A_throat,0.0008512493193261072
+d_throat,0.03292179059217299
+epsilon_c,5.365479586069467
+
+CHAMBER DIMENSIONS
+Parameter,Value
+diameter,0.07625840572399425
+volume,0.0005405433177720781
+area,0.004567360845499757
+length,0.11834915962566829
+
+COMBUSTION GAS PROPERTIES
+Parameter,Value
+Pc,350
+OF,3
+Tc,2556.88
+gamma,1.2420816692148595
+MW,21.625276108084172
+R,384.4789114573111
+Cp,1858.1144
+cstar,1506.9861489730333
+
+NOZZLE DEFINITION
+Parameter,Value
+alpha,15
+theta_n,23.80597493028034
+theta_e,14.308609836520288
+Rt,0.016460895296086495
+R,0.006288062003105041
+epsilon_e,3.8759643470827276
+
+NOZZLE ANGLES
+Parameter,Value
+theta_n,23.80597493028034
+theta_e,14.308609836520288
+
+NOZZLE DIMENSIONS
+Parameter,Value
+Ln,0.048272614412902565
+
+INJECTOR AREAS
+Parameter,Value
+A_N2O,7.330592531358677e-05
+A_IPA_comb,3.2794353992034183e-05
+A_IPA_film,8.198588498008546e-06
+
+PINTLE GEOMETRY
+Parameter,Value
+pintle_diameter,0.015251681144798851
+skip_distance,0.015251681144798851
+pintle_circumference,0.04791456943939404
+row1,"['#56', '8']"
+row2,"['#51', '28']"
+trim,#59
+primary_holes,36
+holes,37
+primary_area,7.245410243615119e-05
+trim_area,8.517752723628938e-07
+area,7.330587770851408e-05
+error,4.760507268876564e-11
+percent_error,6.494027936366878e-05
+undersize,0.011620109476712383
+diameter_ratio,1.4408602150537635
+drill_count,3
+
+ANNULUS GEOMETRY
+Parameter,Value
+d_inner,0.015251681144798851
+r_inner,0.007625840572399426
+r_outer,0.008282041506918964
+thickness,0.0006562009345195382
+
+FILM GEOMETRY
+Parameter,Value
+drill,#57
+drill_number,57
+number_of_holes,8
+diameter_mm,1.143
+area_per_hole_mm2,1.026082645172433
+total_area_mm2,8.208661161379464
+total_area_m2,8.208661161379463e-06
+target_area_m2,8.198588498008546e-06
+area_error_m2,1.0072663370918277e-08
+error_percent,0.12285850635588003
+
