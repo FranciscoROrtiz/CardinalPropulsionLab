@@ -1,4 +1,4 @@
-from Mercury.define_conditions_ox import define_conditions_ox
+from define_conditions_ox import define_conditions_ox
 from calc_mass_flux_rate import calculate_mass_flux_rate
 
 def calc_ox_mass_flow_rate(A, Pc, p_tank, dp, Cd):
