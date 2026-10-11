@@ -28,7 +28,7 @@ OFMin = 2.8
 OFMax = 3.2  # Oxidizer_mass_flow_rate / Fuel_mass_flow_rate
 OF_Range = [OFMin, OFMax];
 
-A_step = .0000005
+A_step = .0000002
 
 Aox_Min = .000035       #Oxidizer injector area
 Aox_Max = .000055
