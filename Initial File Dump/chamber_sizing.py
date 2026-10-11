@@ -15,6 +15,7 @@ from chamber_def import chamber_def
 #from nozzle_contraction_ratio import calculate_contraction_ratio
 #from nozzle_sizing import nozzle_sizing
 from calc_fuel_area import calc_fuel_area
+import numpy as np
 
 
 def chamber_sizing(Pc_Range, OF_Range, Thrust_Range, Aox_Range, Af_Range,p_tank, L_star, Pe, eta_cstar, eta_nozzle, eta_Cf, dp_IPA, Cd, rho, dp_N2O):
@@ -37,10 +38,10 @@ def chamber_sizing(Pc_Range, OF_Range, Thrust_Range, Aox_Range, Af_Range,p_tank,
             A_fuel_min = calc_fuel_area(mdot_fuel_min, Pc, p_tank, dp_IPA, Cd, rho)
             A_fuel_max = calc_fuel_area(mdot_fuel_max, Pc, p_tank, dp_IPA, Cd, rho)
 
-            for A_fuel in range(A_fuel_min, A_fuel_max + 1):
+            for A_fuel in np.arange(A_fuel_min, A_fuel_max + 1):
                 pass_OF += 1
                 #print("OF:", OF)
-                mdot_fuel = calc_fuel_mass_flow_rate(A_fuel, Pc, p_tank, dp_IPA, Cd)
+                mdot_fuel = calc_fuel_mass_flow_rate(A_fuel, Pc, p_tank, dp_IPA, Cd,rho)
                 OF = mdot_fuel / mdot_ox
                 combustion_gas_properties = rocketCEA_run(Pc, OF)
                 #print("Gamma:", combustion_gas_properties['gamma'])
@@ -50,7 +51,7 @@ def chamber_sizing(Pc_Range, OF_Range, Thrust_Range, Aox_Range, Af_Range,p_tank,
                 Pc_star = calc_pc_star(A_throat, combustion_gas_properties['cstar'], mdot_tot)
                 #print("Pc_star:", Pc_star)
 
-                if abs(Pc_star - Pc) > 0.1 * abs(Pc):
+                if abs(Pc_star - Pc) > 0.14 * abs(Pc):
                     continue
                 else:
                     pass_Pc += 1
@@ -69,40 +70,40 @@ def chamber_sizing(Pc_Range, OF_Range, Thrust_Range, Aox_Range, Af_Range,p_tank,
                         Chamber_def['epsilon_c'] = calculate_contraction_ratio(Chamber_def['d_throat'])
                         chamber_dimensions = chamber_dimensions_calc(Chamber_def)  # Diameter, Volume, Chamber Area, Chamber Length
                         
-                        # run = {}
-                        # run['A_throat'] = A_throat
-                        # run['Pc'] = Pc
-                        # run['Aox'] = A_ox
-                        # run['Af'] = A_fuel
-                        # run['OF'] = OF
-                        # run['mdot_fuel'] = mdot_fuel
-                        # run['mdot_ox'] = mdot_ox
-                        # run['thrust'] = thrust
-                        # results.append(run)
+                        run = {}
+                        run['A_throat'] = A_throat
+                        run['Pc'] = Pc
+                        run['Aox'] = A_ox
+                        run['Af'] = A_fuel
+                        run['OF'] = OF
+                        run['mdot_fuel'] = mdot_fuel
+                        run['mdot_ox'] = mdot_ox
+                        run['thrust'] = thrust
+                        results = run
 
-                        # nozzle_inputs = {
-                        #     'Chamber_def': Chamber_def,
-                        #     'epsilon_e': epsilon_e,
-                        # }
+                        nozzle_inputs = {
+                            'Chamber_def': Chamber_def,
+                            'epsilon_e': epsilon_e,
+                        }
 
                         num_pass +=1
 
-    run = {}
-    run['A_throat'] = A_throat
-    run['Pc'] = Pc
-    run['Aox'] = A_ox
-    run['Af'] = A_fuel
-    run['OF'] = OF
-    run['mdot_fuel'] = mdot_fuel
-    run['mdot_ox'] = mdot_ox
-    run['thrust'] = thrust
-    results[run] = run
+    # run = {}
+    # run['A_throat'] = A_throat
+    # run['Pc'] = Pc
+    # run['Aox'] = A_ox
+    # run['Af'] = A_fuel
+    # run['OF'] = OF
+    # run['mdot_fuel'] = mdot_fuel
+    # run['mdot_ox'] = mdot_ox
+    # run['thrust'] = thrust
+    # results[run] = run
 
 
-    nozzle_inputs = {
-        'Chamber_def': Chamber_def,
-        'epsilon_e': epsilon_e,
-                                }
+    # nozzle_inputs = {
+    #     'Chamber_def': Chamber_def,
+    #     'epsilon_e': epsilon_e,
+    #                             }
     print("Number of passing cases:", num_pass)
     print("Number of not passing OF Cases:", counter - pass_OF)
     print("Number of not passing Pc Cases:", counter - pass_Pc)
