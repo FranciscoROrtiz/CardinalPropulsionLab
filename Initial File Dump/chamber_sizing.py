@@ -26,7 +26,7 @@ def chamber_sizing(Pc_Range, OF_Range, Thrust_Range, Aox_Range, Af_Range,p_tank,
     pass_Thrust = 0
     for i in range(len(Pc_Range)):
         Pc = Pc_Range[i]
-      #  print(Pc)
+        print(Pc)
         for j in range(len(Aox_Range)):
             A_ox = Aox_Range[j]
             for k in range(len(Af_Range)):
@@ -39,15 +39,15 @@ def chamber_sizing(Pc_Range, OF_Range, Thrust_Range, Aox_Range, Af_Range,p_tank,
                     continue
                 else:
                     pass_OF += 1
-                  #  print("OF:", OF)
+                    #print("OF:", OF)
                     combustion_gas_properties = rocketCEA_run(Pc, OF)
-                 #   print("Gamma:", combustion_gas_properties['gamma'])
+                    #print("Gamma:", combustion_gas_properties['gamma'])
                     mdot_tot = mdot_fuel + mdot_ox
                     A_throat = throat_area_calc(Pc, combustion_gas_properties['Tc'],
                     combustion_gas_properties['gamma'], mdot_tot, combustion_gas_properties['R'], eta_cstar)
                     Pc_star = calc_pc_star(A_throat, combustion_gas_properties['cstar'], mdot_tot)
-                  #  print("Pc_star:", Pc_star)
-                    if abs(Pc_star - Pc) > 0.5 * abs(Pc):
+                    #print("Pc_star:", Pc_star)
+                    if abs(Pc_star - Pc) > 0.1 * abs(Pc):
                         continue
                     else:
                         pass_Pc += 1
@@ -91,7 +91,7 @@ def chamber_sizing(Pc_Range, OF_Range, Thrust_Range, Aox_Range, Af_Range,p_tank,
     run['mdot_fuel'] = mdot_fuel
     run['mdot_ox'] = mdot_ox
     run['thrust'] = thrust
-    results.append(run)
+    results[run] = run
 
 
     nozzle_inputs = {
