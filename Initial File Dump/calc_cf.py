@@ -1,7 +1,9 @@
 import math
 
 def calc_Cf(gamma, Pe,Pc, epsilon_e):
-    Cf = (math.sqrt(2 * gamma**2 / (g - 1) * (2 / (gamma + 1))**((gamma + 1) / (gamma - 1))
-                * (1 - Pe**((gamma - 1) / gamma))) + (Pe - 101325 / Pc) * epsilon_e)
+    Pa = 101325
+    Cf = ( math.sqrt((2 * gamma**2 / (gamma - 1))* (2 / (gamma + 1))**((gamma + 1) / (gamma - 1))* (1 - (Pe / Pc)**((gamma - 1) / gamma)))+ ((Pe - Pa) / Pc) 
+          * epsilon_e)
     return Cf
 
+     
