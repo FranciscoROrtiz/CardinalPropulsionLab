@@ -11,19 +11,19 @@ g = 9.81
 psi_to_Pa = 6894.75729      # psi * psi_to_Pa = Pa
 rho = 786
 Cd = 0.4
-p_tank = 465 * psi_to_Pa
+p_tank = 500 * psi_to_Pa
 
 lbf_to_N = 4.44822    # lbf * lbf_to_N = N
 
 ThrustMin = 445 * lbf_to_N    # [N]
-ThrustMax = 455 * lbf_to_N    # [N]
+ThrustMax = 10000 * lbf_to_N    # [N]
 Thrust_Range = [ThrustMin, ThrustMax]
 
 Pc_step = 1 * psi_to_Pa
-Pc_Low = 300 * psi_to_Pa
-Pc_High = 400 * psi_to_Pa
+Pc_Low = 340 * psi_to_Pa
+Pc_High = 360 * psi_to_Pa
 Pc_Range = np.arange(Pc_Low, Pc_High, Pc_step)
-err_Pc = 0.2;
+err_Pc = 0.01;
 
 #Isp = 165   # Specific Impulse
 OFMin = 2.8
@@ -32,8 +32,8 @@ OF_Range = [OFMin, OFMax];
 
 A_step = .0000003
 
-Aox_Min = .000035       #Oxidizer injector area
-Aox_Max = .000055
+Aox_Min = .000055       #Oxidizer injector area
+Aox_Max = .000075
 Aox_Range = np.arange(Aox_Min, Aox_Max, A_step)
 
 Af_Min = .000009         #Fuel injector area
@@ -42,7 +42,7 @@ Af_Range = np.arange(Af_Min, Af_Max, A_step)
 
 
 # Tank Pressure
-p_tank_low = 465 * psi_to_Pa        #  What is the initial N2O pressure in the tank
+#p_tank_low = 465 * psi_to_Pa        #  What is the initial N2O pressure in the tank
 dp_N2O = 15 * psi_to_Pa              # Pressure loss from tank to injector face
 dp_IPA = 45 * psi_to_Pa             # Pressure loss from tank to injector face
 
@@ -59,14 +59,14 @@ Pe = 101325         # Nozzle exit pressure design point
 
 
 
-import inspect
 
-print("Loaded from:", inspect.getfile(chamber_sizing))
-print("Signature:", inspect.signature(chamber_sizing))
 results,nozzle_inputs = chamber_sizing(Pc_Range, OF_Range, Thrust_Range, Aox_Range, A_step,p_tank, L_star, Pe, eta_cstar, eta_nozzle, eta_Cf, dp_IPA, Cd, rho, dp_N2O,err_Pc)
 nozzle_angles, n_def, nozzle_dimensions = nozzle_sizing(nozzle_inputs['Chamber_def'], nozzle_inputs['epsilon_e'],alpha)
-                                                                            
+inj_to_throat = results['Cyl Length'] + 1.5*n_def['Rt'] 
+
+print("Injector to Throat Length:", inj_to_throat)
 print("Results:", results)
-print("Nozzle Inputs:", nozzle_inputs)
-print("Nozzle Angles:", nozzle_angles)
+print("Nozzle Inputs:", nozzle_inputs)                                                                            
+#print("Nozzle Angles:", nozzle_angles)
+#print("Nozzle Def:", n_def)
 

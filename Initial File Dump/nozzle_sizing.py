@@ -34,7 +34,6 @@ def nozzle_sizing(chamber_def, epsilon_e,alpha):
     nozzle_angles = calculate_parabolic_angles(epsilon_e)
     n_def = nozzle_def(alpha, nozzle_angles['theta_n'], nozzle_angles['theta_e'], chamber_def)
     nozzle_dimensions = nozzle_dimensions_calc(n_def, epsilon_e)  # Nozzle Length
-    print("Nozzle Angles:", nozzle_angles)
     return nozzle_angles, n_def, nozzle_dimensions
 
 
