@@ -18,7 +18,7 @@ from calc_fuel_area import calc_fuel_area
 import numpy as np
 
 
-def chamber_sizing(Pc_Range, OF_Range, Thrust_Range, Aox_Range, Af_Range,p_tank, L_star, Pe, eta_cstar, eta_nozzle, eta_Cf, dp_IPA, Cd, rho, dp_N2O):
+def chamber_sizing(Pc_Range, OF_Range, Thrust_Range, Aox_Range, A_step,p_tank, L_star, Pe, eta_cstar, eta_nozzle, eta_Cf, dp_IPA, Cd, rho, dp_N2O,err_Pc):
 
     counter = 0
     num_pass = 0
@@ -38,7 +38,7 @@ def chamber_sizing(Pc_Range, OF_Range, Thrust_Range, Aox_Range, Af_Range,p_tank,
             A_fuel_min = calc_fuel_area(mdot_fuel_min, Pc, p_tank, dp_IPA, Cd, rho)
             A_fuel_max = calc_fuel_area(mdot_fuel_max, Pc, p_tank, dp_IPA, Cd, rho)
 
-            for A_fuel in np.arange(A_fuel_min, A_fuel_max + 1):
+            for A_fuel in np.arange(A_fuel_min, A_fuel_max + 1, A_step):
                 pass_OF += 1
                 #print("OF:", OF)
                 mdot_fuel = calc_fuel_mass_flow_rate(A_fuel, Pc, p_tank, dp_IPA, Cd,rho)
@@ -51,7 +51,7 @@ def chamber_sizing(Pc_Range, OF_Range, Thrust_Range, Aox_Range, Af_Range,p_tank,
                 Pc_star = calc_pc_star(A_throat, combustion_gas_properties['cstar'], mdot_tot)
                 #print("Pc_star:", Pc_star)
 
-                if abs(Pc_star - Pc) > 0.14 * abs(Pc):
+                if abs(Pc_star - Pc) > err_Pc * abs(Pc):
                     continue
                 else:
                     pass_Pc += 1

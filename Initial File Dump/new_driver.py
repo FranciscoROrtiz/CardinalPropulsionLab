@@ -3,6 +3,7 @@ from chamber_def import chamber_def
 import numpy as np
 from rocketCEA_run import rocketCEA_run
 from nozzle_sizing import nozzle_sizing
+import matplotlib.pyplot as plt
 #from injector_sizing import injector_sizing
 #from print_dictionaries import print_dictonary
 
@@ -22,13 +23,14 @@ Pc_step = 1 * psi_to_Pa
 Pc_Low = 300 * psi_to_Pa
 Pc_High = 400 * psi_to_Pa
 Pc_Range = np.arange(Pc_Low, Pc_High, Pc_step)
+err_Pc = 0.2;
 
 #Isp = 165   # Specific Impulse
 OFMin = 2.8
 OFMax = 3.2  # Oxidizer_mass_flow_rate / Fuel_mass_flow_rate
 OF_Range = [OFMin, OFMax];
 
-A_step = .0000002
+A_step = .0000003
 
 Aox_Min = .000035       #Oxidizer injector area
 Aox_Max = .000055
@@ -61,9 +63,10 @@ import inspect
 
 print("Loaded from:", inspect.getfile(chamber_sizing))
 print("Signature:", inspect.signature(chamber_sizing))
-results,nozzle_inputs = chamber_sizing(Pc_Range, OF_Range, Thrust_Range, Aox_Range, Af_Range,p_tank, L_star, Pe, eta_cstar, eta_nozzle, eta_Cf, dp_IPA, Cd, rho, dp_N2O)
+results,nozzle_inputs = chamber_sizing(Pc_Range, OF_Range, Thrust_Range, Aox_Range, A_step,p_tank, L_star, Pe, eta_cstar, eta_nozzle, eta_Cf, dp_IPA, Cd, rho, dp_N2O,err_Pc)
 nozzle_angles, n_def, nozzle_dimensions = nozzle_sizing(nozzle_inputs['Chamber_def'], nozzle_inputs['epsilon_e'],alpha)
                                                                             
 print("Results:", results)
 print("Nozzle Inputs:", nozzle_inputs)
 print("Nozzle Angles:", nozzle_angles)
+
