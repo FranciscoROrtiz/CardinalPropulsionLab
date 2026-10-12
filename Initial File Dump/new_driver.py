@@ -16,7 +16,7 @@ p_tank = 500 * psi_to_Pa
 lbf_to_N = 4.44822    # lbf * lbf_to_N = N
 
 ThrustMin = 445 * lbf_to_N    # [N]
-ThrustMax = 10000 * lbf_to_N    # [N]
+ThrustMax = 650 * lbf_to_N    # [N]
 Thrust_Range = [ThrustMin, ThrustMax]
 
 Pc_step = 1 * psi_to_Pa
@@ -60,13 +60,13 @@ Pe = 101325         # Nozzle exit pressure design point
 
 
 
-results,nozzle_inputs = chamber_sizing(Pc_Range, OF_Range, Thrust_Range, Aox_Range, A_step,p_tank, L_star, Pe, eta_cstar, eta_nozzle, eta_Cf, dp_IPA, Cd, rho, dp_N2O,err_Pc)
+results,nozzle_inputs, results_max = chamber_sizing(Pc_Range, OF_Range, Thrust_Range, Aox_Range, A_step,p_tank, L_star, Pe, eta_cstar, eta_nozzle, eta_Cf, dp_IPA, Cd, rho, dp_N2O,err_Pc)
 nozzle_angles, n_def, nozzle_dimensions = nozzle_sizing(nozzle_inputs['Chamber_def'], nozzle_inputs['epsilon_e'],alpha)
-inj_to_throat = results['Cyl Length'] + 1.5*n_def['Rt'] 
+#inj_to_throat = results['Cyl Length'] + 1.5*n_def['Rt'] 
 
-print("Injector to Throat Length:", inj_to_throat)
-print("Results:", results)
-print("Nozzle Inputs:", nozzle_inputs)                                                                            
+#print("Injector to Throat Length:", inj_to_throat)
+print("Results at Max Fuel Area:", results_max)
+#print("Nozzle Inputs:", nozzle_inputs)                                                                            
 #print("Nozzle Angles:", nozzle_angles)
 #print("Nozzle Def:", n_def)
 

@@ -45,6 +45,7 @@ def chamber_sizing(Pc_Range, OF_Range, Thrust_Range, Aox_Range, A_step,p_tank, L
         A_fuel_low = 0
         thrust_low = 0
         A_throat_low = 0
+        A_fuelmax = 0
         #print(Pc)
 
         for j in range(len(Aox_Range)):
@@ -94,6 +95,16 @@ def chamber_sizing(Pc_Range, OF_Range, Thrust_Range, Aox_Range, A_step,p_tank, L
                             A_throat_low = A_throat
                         pass_Thrust += 1
                         # print("\n Thrust:", thrust)
+                        if A_fuel > A_fuelmax:
+                            A_fuelmax = A_fuel
+                            err_max = err_PC_star
+                            Pc_max = Pc
+                            Aox_max = A_ox
+                            mdot_ox_max= mdot_ox
+                            mdot_fuel_max = mdot_fuel
+                            thrust_max = thrust
+                            A_throat_max = A_throat
+                            OF_max = OF
                         Chamber_def = chamber_def(L_star)
                         Chamber_def['A_throat'] = A_throat
                         Chamber_def['d_throat'] = area_to_diameter(Chamber_def['A_throat'])
@@ -102,19 +113,19 @@ def chamber_sizing(Pc_Range, OF_Range, Thrust_Range, Aox_Range, A_step,p_tank, L
                         exit_area = chamber_dimensions['area'] * epsilon_e
                         Chamber_def['Exit Diameter'] = area_to_diameter(exit_area)
                         
-                        run = {}
-                        run['A_throat'] = A_throat
-                        run['Pc'] = Pc
-                        run['Aox'] = A_ox
-                        run['Af'] = A_fuel
-                        run['OF'] = OF
-                        run['mdot_fuel'] = mdot_fuel
-                        run['mdot_ox'] = mdot_ox
-                        run['thrust'] = thrust
-                        run['Cyl Length'] = chamber_dimensions['length']
-                        run['Chamber Diameter'] = chamber_dimensions['diameter']
-                        run['Exit Diameter'] = Chamber_def['Exit Diameter']
-                        results = run
+                        # run = {}
+                        # run['A_throat'] = A_throat
+                        # run['Pc'] = Pc
+                        # run['Aox'] = A_ox
+                        # run['Af'] = A_fuel
+                        # run['OF'] = OF
+                        # run['mdot_fuel'] = mdot_fuel
+                        # run['mdot_ox'] = mdot_ox
+                        # run['thrust'] = thrust
+                        # run['Cyl Length'] = chamber_dimensions['length']
+                        # run['Chamber Diameter'] = chamber_dimensions['diameter']
+                        # run['Exit Diameter'] = Chamber_def['Exit Diameter']
+                        # results = run
 
                         nozzle_inputs = {
                             'Chamber_def': Chamber_def,
@@ -122,14 +133,34 @@ def chamber_sizing(Pc_Range, OF_Range, Thrust_Range, Aox_Range, A_step,p_tank, L
                         }
 
                         num_pass +=1
-        err_low_array.append(err_low)
-        Pc_low_array.append(Pc_low)
-        Aox_low_array.append(Aox_low)
-        mdot_ox_low_array.append(mdot_ox_low)
-        mdot_fuel_low_array.append(mdot_fuel_low)
-        A_fuel_low_array.append(A_fuel_low)
-        thrust_low_array.append(thrust_low)
-        A_throat_low_array.append(A_throat_low)
+        # err_low_array.append(err_low)
+        # Pc_low_array.append(Pc_low)
+        # Aox_low_array.append(Aox_low)
+        # mdot_ox_low_array.append(mdot_ox_low)
+        # mdot_fuel_low_array.append(mdot_fuel_low)
+        # A_fuel_low_array.append(A_fuel_low)
+        # thrust_low_array.append(thrust_low)
+        # A_throat_low_array.append(A_throat_low)
+
+
+
+    results_max = {
+        'A_throat': A_throat_max,
+        'Pc': Pc_max,
+        'Aox': Aox_max,
+        'Af': A_fuelmax,
+        'err': err_max,
+        'mdot_fuel': mdot_fuel_max,
+        'mdot_ox': mdot_ox_max,
+        'OF_max': OF_max,
+        'thrust': thrust_max,
+        'Cyl Length': chamber_dimensions['length'],
+        'Chamber Diameter': chamber_dimensions['diameter'],
+        'Exit Diameter': Chamber_def['Exit Diameter'],
+        'Injector to Throat Length': chamber_dimensions['length'] + 1.5*Chamber_def['d_throat']
+    }
+       
+
 
     
     Aox_low_array = np.asarray(Aox_low_array)
@@ -169,4 +200,4 @@ def chamber_sizing(Pc_Range, OF_Range, Thrust_Range, Aox_Range, A_step,p_tank, L
     print("Number of passing Pc Cases:", pass_Pc)
     print("Number of passing Thrust Cases:", pass_Thrust)
     print("Total number of cases:", counter)
-    return results, nozzle_inputs
+    return results, nozzle_inputs, results_max
