@@ -12,8 +12,6 @@ from calc_pc_star import calc_pc_star
 from calc_cf import calc_Cf
 from calc_thrust import calc_thrust
 from chamber_def import chamber_def
-#from nozzle_contraction_ratio import calculate_contraction_ratio
-#from nozzle_sizing import nozzle_sizing
 from calc_fuel_area import calc_fuel_area
 import numpy as np
 import matplotlib.pyplot as plt
@@ -23,30 +21,14 @@ def chamber_sizing(Pc_Range, OF_Range, Thrust_Range, Aox_Range, A_step,p_tank, L
 
     counter = 0
     num_pass = 0
-    results = []
-    #pass_OF = 0
     pass_Pc = 0
     pass_Thrust = 0
-    err_low_array = []
-    Pc_low_array = []
-    Aox_low_array = []
-    mdot_ox_low_array = []
-    mdot_fuel_low_array = []
-    A_fuel_low_array = []
-    thrust_low_array = []
-    A_throat_low_array = []
+    thrust_max = 0
+   
+
+    
     for i in range(len(Pc_Range)):
-        err_low = 1
         Pc = Pc_Range[i]
-        Pc_low = Pc
-        Aox_low = 0
-        mdot_ox_low= 0
-        mdot_fuel_low = 0
-        A_fuel_low = 0
-        thrust_low = 0
-        A_throat_low = 0
-        A_fuelmax = 0
-        #print(Pc)
 
         for j in range(len(Aox_Range)):
             A_ox = Aox_Range[j]
@@ -59,11 +41,9 @@ def chamber_sizing(Pc_Range, OF_Range, Thrust_Range, Aox_Range, A_step,p_tank, L
 
             for A_fuel in np.arange(A_fuel_min, A_fuel_max, A_step):
                 counter += 1
-                #print("OF:", OF)
                 mdot_fuel = calc_fuel_mass_flow_rate(A_fuel, Pc, p_tank, dp_IPA, Cd,rho)
                 OF = mdot_ox / mdot_fuel
                 combustion_gas_properties = rocketCEA_run(Pc, OF)
-                #print("Gamma:", combustion_gas_properties['gamma'])
                 mdot_tot = mdot_fuel + mdot_ox
                 A_throat = throat_area_calc(Pc, combustion_gas_properties['Tc'],
                 combustion_gas_properties['gamma'], mdot_tot, combustion_gas_properties['R'], eta_cstar)
@@ -84,120 +64,58 @@ def chamber_sizing(Pc_Range, OF_Range, Thrust_Range, Aox_Range, A_step,p_tank, L
                     if not (Thrust_Range[0] <= thrust <= Thrust_Range[1]):
                         continue
                     else:
-                        if err_PC_star < err_low:
-                            err_low = err_PC_star
-                            Pc_low = Pc
-                            Aox_low = A_ox
-                            mdot_ox_low= mdot_ox
-                            mdot_fuel_low = mdot_fuel
-                            A_fuel_low = A_fuel
-                            thrust_low = thrust
-                            A_throat_low = A_throat
                         pass_Thrust += 1
-                        # print("\n Thrust:", thrust)
-                        if A_fuel > A_fuelmax:
-                            A_fuelmax = A_fuel
-                            err_max = err_PC_star
-                            Pc_max = Pc
-                            Aox_max = A_ox
-                            mdot_ox_max= mdot_ox
-                            mdot_fuel_max = mdot_fuel
-                            thrust_max = thrust
-                            A_throat_max = A_throat
-                            OF_max = OF
+                     
                         Chamber_def = chamber_def(L_star)
                         Chamber_def['A_throat'] = A_throat
                         Chamber_def['d_throat'] = area_to_diameter(Chamber_def['A_throat'])
                         Chamber_def['epsilon_c'] = calculate_contraction_ratio(Chamber_def['d_throat'])
-                        chamber_dimensions = chamber_dimensions_calc(Chamber_def)  # Diameter, Volume, Chamber Area, Chamber Length
-                        exit_area = chamber_dimensions['A_throat'] * epsilon_e
+                        chamber_dimensions = chamber_dimensions_calc(Chamber_def)  
+                        exit_area = Chamber_def['A_throat'] * epsilon_e
                         Chamber_def['Exit Diameter'] = area_to_diameter(exit_area)
-                        
-                        # run = {}
-                        # run['A_throat'] = A_throat
-                        # run['Pc'] = Pc
-                        # run['Aox'] = A_ox
-                        # run['Af'] = A_fuel
-                        # run['OF'] = OF
-                        # run['mdot_fuel'] = mdot_fuel
-                        # run['mdot_ox'] = mdot_ox
-                        # run['thrust'] = thrust
-                        # run['Cyl Length'] = chamber_dimensions['length']
-                        # run['Chamber Diameter'] = chamber_dimensions['diameter']
-                        # run['Exit Diameter'] = Chamber_def['Exit Diameter']
-                        # results = run
-
-                        nozzle_inputs = {
-                            'Chamber_def': Chamber_def,
-                            'epsilon_e': epsilon_e,
-                        }
+                        if chamber_dimensions['diameter']*39.3701 > 3:
+                            continue
+                        else:
+                            if thrust > thrust_max:
+                                thrust_max = thrust
+                                combustion_properties_max = combustion_gas_properties
+                                results_max = {
+                                    'A_throat': A_throat,
+                                    'd_throat': Chamber_def['d_throat'],
+                                    'Pc': Pc,
+                                    'Aox': A_ox,
+                                    'Af': A_fuel,
+                                    'err': err_PC_star,
+                                    'mdot_fuel': mdot_fuel,
+                                    'mdot_ox': mdot_ox,
+                                    'OF_max': OF,
+                                    'thrust': thrust,
+                                    'Cyl Length': chamber_dimensions['length'],
+                                    'Chamber Diameter': chamber_dimensions['diameter'],
+                                    'Exit Diameter': Chamber_def['Exit Diameter'],
+                                    'Injector to Throat Length': chamber_dimensions['length'] + 1.5*0.5*Chamber_def['d_throat'], #technically not actually
+                                                                                             # how you find injector to throat length but it's close enough
+                                    'Combustion Properties': combustion_properties_max
+                                }
+                                nozzle_inputs = {
+                                                'Chamber_def': Chamber_def,
+                                                'epsilon_e': epsilon_e,
+                                                        }
+            
 
                         num_pass +=1
-        # err_low_array.append(err_low)
-        # Pc_low_array.append(Pc_low)
-        # Aox_low_array.append(Aox_low)
-        # mdot_ox_low_array.append(mdot_ox_low)
-        # mdot_fuel_low_array.append(mdot_fuel_low)
-        # A_fuel_low_array.append(A_fuel_low)
-        # thrust_low_array.append(thrust_low)
-        # A_throat_low_array.append(A_throat_low)
+       
 
 
-
-    results_max = {
-        'A_throat': A_throat_max,
-        'Pc': Pc_max,
-        'Aox': Aox_max,
-        'Af': A_fuelmax,
-        'err': err_max,
-        'mdot_fuel': mdot_fuel_max,
-        'mdot_ox': mdot_ox_max,
-        'OF_max': OF_max,
-        'thrust': thrust_max,
-        'Cyl Length': chamber_dimensions['length'],
-        'Chamber Diameter': chamber_dimensions['diameter'],
-        'Exit Diameter': Chamber_def['Exit Diameter'],
-        'Injector to Throat Length': chamber_dimensions['length'] + 1.5*0.5*Chamber_def['d_throat']
-    }
+   
        
 
 
     
-    Aox_low_array = np.asarray(Aox_low_array)
-    Pc_low_array = np.asarray(Pc_low_array)
-    thrust_low_array = np.asarray(thrust_low_array)
-    A_fuel_low_array = np.asarray(A_fuel_low_array)
-    err_low_array = np.asarray(err_low_array)
-    fig, axes = plt.subplots(4, 1, figsize=(8, 9))
-    keep = Aox_low_array != 0
-    axes[0].plot(Aox_low_array[keep], err_low_array[keep])
-    axes[0].set_xlabel('Aox')
-    axes[0].set_title('Error in Pc vs Aox')
 
-    keep = Pc_low_array != 0
-    axes[1].plot(Pc_low_array[keep], err_low_array[keep])
-    axes[1].set_xlabel('Pc')
-    axes[1].set_title('Error in Pc vs Pc')
-
-    keep = thrust_low_array != 0
-    axes[2].plot(thrust_low_array[keep], err_low_array[keep])
-    axes[2].set_xlabel('Thrust')
-    axes[2].set_title('Error in Pc vs Thrust')
-
-    keep = A_fuel_low_array != 0
-    axes[3].plot(A_fuel_low_array[keep], err_low_array[keep])
-    axes[3].set_xlabel('Af')
-    axes[3].set_title('Error in Pc vs Af')
-
-    for ax in axes:
-        ax.set_ylabel('Error in Pc')
-
-    fig.tight_layout()
-    plt.show()
 
     print("Number of passing cases:", num_pass)
-    #print("Number of passing OF Cases:", pass_OF)
     print("Number of passing Pc Cases:", pass_Pc)
     print("Number of passing Thrust Cases:", pass_Thrust)
     print("Total number of cases:", counter)
-    return results, nozzle_inputs, results_max
+    return results_max, nozzle_inputs
