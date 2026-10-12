@@ -110,7 +110,7 @@ def chamber_sizing(Pc_Range, OF_Range, Thrust_Range, Aox_Range, A_step,p_tank, L
                         Chamber_def['d_throat'] = area_to_diameter(Chamber_def['A_throat'])
                         Chamber_def['epsilon_c'] = calculate_contraction_ratio(Chamber_def['d_throat'])
                         chamber_dimensions = chamber_dimensions_calc(Chamber_def)  # Diameter, Volume, Chamber Area, Chamber Length
-                        exit_area = chamber_dimensions['area'] * epsilon_e
+                        exit_area = chamber_dimensions['A_throat'] * epsilon_e
                         Chamber_def['Exit Diameter'] = area_to_diameter(exit_area)
                         
                         # run = {}
@@ -157,7 +157,7 @@ def chamber_sizing(Pc_Range, OF_Range, Thrust_Range, Aox_Range, A_step,p_tank, L
         'Cyl Length': chamber_dimensions['length'],
         'Chamber Diameter': chamber_dimensions['diameter'],
         'Exit Diameter': Chamber_def['Exit Diameter'],
-        'Injector to Throat Length': chamber_dimensions['length'] + 1.5*Chamber_def['d_throat']
+        'Injector to Throat Length': chamber_dimensions['length'] + 1.5*0.5*Chamber_def['d_throat']
     }
        
 
