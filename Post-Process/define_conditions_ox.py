@@ -7,8 +7,8 @@ def define_conditions_ox(p_1, p_2):
 
     fluid = 'N2O'  # Nitrous Oxide
     fluid_properties = {
-        'P_1': p_1 * psi_to_Pa,  # Pressure in Pascals
-        'P_2': p_2 * psi_to_Pa   # Pressure in Pascals
+        'P_1': p_1,  # Pressure in Pascals
+        'P_2': p_2   # Pressure in Pascals
     }
 
     # Instead of assuming T_1, get it from saturation at P_1
