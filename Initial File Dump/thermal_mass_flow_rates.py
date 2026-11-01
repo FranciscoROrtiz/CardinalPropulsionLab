@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-from Mercury.define_conditions_ox import define_conditions
+from define_conditions_ox import define_conditions_ox
 from define_conditions_fuel import define_conditions_fuel
 
 
@@ -204,7 +204,7 @@ Cd_IPA = 0.4
 # Dictionary.
 # Contains the thermodynamic conditions calculated by
 # define_conditions().
-N2O = define_conditions(p1_N2O, Pc)
+N2O = define_conditions_ox(p1_N2O, Pc)
 
 
 # NumPy array of numbers.
